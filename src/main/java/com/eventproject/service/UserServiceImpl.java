@@ -2,6 +2,7 @@ package com.eventproject.service;
 
 import com.eventproject.model.Role;
 import com.eventproject.model.User;
+import com.eventproject.model.Visitor;
 import com.eventproject.repository.RoleRepo;
 import com.eventproject.repository.UserRepo;
 import lombok.RequiredArgsConstructor;
@@ -38,12 +39,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 user.getPassword(),
                 authorities);
     }
+    @Override
+    public Boolean checkUserExist(String email) {
+        return userRepo.existsByEmail(email);
+    }
 
     @Override
     public User saveUser(User user) {
         log.info("saving new user : {}", user.getEmail());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepo.save(user);
+    }
+    @Override
+    public Visitor saveVisitor(Visitor visitor) {
+        log.info("saving new user : {}", visitor.getEmail());
+        return userRepo.save(visitor);
     }
 
     @Override

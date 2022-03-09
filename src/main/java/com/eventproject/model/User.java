@@ -7,7 +7,12 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.Date;
 
-@Entity @Data @NoArgsConstructor @AllArgsConstructor
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "USER_TYPE")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userId;
@@ -17,6 +22,10 @@ public class User {
     private String lastname;
     private Date birthdate;
     private String telnumber;
+    @Column(length = 64)
+    private String verificationCode;
+    private int accountverfication;
+    private int accountStatus;
     @OneToOne(fetch = FetchType.EAGER)
     private Role role;
 }

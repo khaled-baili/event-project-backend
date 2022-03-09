@@ -19,7 +19,7 @@ public class EventProjectApplication {
 		SpringApplication.run(EventProjectApplication.class, args);
 	}
 	@Bean
-	PasswordEncoder passwordEncoder() {
+	PasswordEncoder passwordEncoder(){
 		return new BCryptPasswordEncoder();
 	}
 //	@Bean

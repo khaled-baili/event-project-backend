@@ -4,18 +4,24 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.eventproject.model.Role;
-import com.eventproject.model.User;
+import com.eventproject.RoleEnum;
+import com.eventproject.dto.RegisterDto;
+import com.eventproject.model.*;
+import com.eventproject.repository.RoleRepo;
 import com.eventproject.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -38,15 +44,75 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    @Autowired
+    private RoleRepo roleRepo;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @GetMapping("/users")
     public ResponseEntity<List<User>>getUsers() {
         return ResponseEntity.ok().body(userService.getUsers());
     }
 
     @PostMapping ("/user/save")
-    public ResponseEntity<User>saveUser(@RequestBody User user) {
-        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());
-        return ResponseEntity.created(uri).body(userService.saveUser(user));
+    public ResponseEntity<?>saveUser(@RequestBody RegisterDto registerDto) {
+        if (userService.checkUserExist(registerDto.getEmail())) {
+            return new ResponseEntity<>("email is already exist", HttpStatus.BAD_REQUEST);
+        }
+        Sponsor sponsor;
+        Visitor visitor;
+        ProductOwner productOwner;
+        Role role = roleRepo.findByName(registerDto.getRole());
+        switch (role.getName()) {
+            case "ROLE_VISITOR":
+                visitor = new Visitor();
+                visitor.setEmail(registerDto.getEmail());
+                visitor.setFirstname(registerDto.getFirstname());
+                visitor.setLastname(registerDto.getLastname());
+                visitor.setTelnumber(registerDto.getTelnumber());
+                visitor.setBirthdate(registerDto.getBirthdate());
+                visitor.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+                visitor.setRole(role);
+                visitor.setAccountStatus(0);
+                visitor.setAccountverfication(0);
+                visitor.setOccupation(registerDto.getOccupation());
+                userService.saveVisitor(visitor);
+                break;
+            case "ROLE_PRODUCT_OWNER":
+                productOwner = new ProductOwner();
+                productOwner.setEmail(registerDto.getEmail());
+                productOwner.setFirstname(registerDto.getFirstname());
+                productOwner.setLastname(registerDto.getLastname());
+                productOwner.setTelnumber(registerDto.getTelnumber());
+                productOwner.setBirthdate(registerDto.getBirthdate());
+                productOwner.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+                productOwner.setRole(role);
+                productOwner.setAccountStatus(0);
+                productOwner.setAccountverfication(0);
+                productOwner.setEntrepriseRole(registerDto.getEntrepriseRole());
+                userService.saveUser(productOwner);
+                break;
+            case "ROLE_SPONSOR":
+                sponsor = new Sponsor();
+                sponsor.setEmail(registerDto.getEmail());
+                sponsor.setFirstname(registerDto.getFirstname());
+                sponsor.setLastname(registerDto.getLastname());
+                sponsor.setTelnumber(registerDto.getTelnumber());
+                sponsor.setBirthdate(registerDto.getBirthdate());
+                sponsor.setPassword(passwordEncoder.encode(registerDto.getPassword()));
+                sponsor.setRole(role);
+                sponsor.setSponsorValidation(0);
+                sponsor.setAccountStatus(0);
+                sponsor.setAccountverfication(0);
+                sponsor.setEmployeeType(registerDto.getEmployeeType());
+                userService.saveUser(sponsor);
+                break;
+        }
+        return new ResponseEntity<>("User registered successfully", HttpStatus.OK);
     }
 
     @GetMapping("/token/refresh")
