@@ -24,7 +24,7 @@ public class User {
     private String telnumber;
     @Column(length = 64)
     private String verificationCode;
-    private int accountverfication;
+    private boolean enabled;
     private int accountStatus;
     @OneToOne(fetch = FetchType.EAGER)
     private Role role;
