@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 @Entity
@@ -16,16 +18,30 @@ import java.util.Date;
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userId;
+    @Column(nullable = false, unique = true)
+
     private String email;
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
     private String firstname;
+
+    @Column(nullable = false)
     private String lastname;
+
+    @Column(nullable = false)
     private Date birthdate;
+
+    @Column(nullable = false)
     private String telnumber;
+
     @Column(length = 64)
     private String verificationCode;
     private boolean enabled;
     private int accountStatus;
+    @Column(nullable = true,length = 36)
+    private String resetToken;
     @OneToOne(fetch = FetchType.EAGER)
     private Role role;
 }

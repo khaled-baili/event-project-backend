@@ -1,40 +1,37 @@
 package com.eventproject.service;
 
+import com.eventproject.model.Mail;
 import com.eventproject.model.Role;
 import com.eventproject.model.User;
-import com.eventproject.model.Visitor;
 import com.eventproject.repository.RoleRepo;
 import com.eventproject.repository.UserRepo;
+import com.sun.mail.imap.Utility;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
+
 import javax.transaction.Transactional;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static com.sun.activation.registries.LogSupport.log;
 
 @Service @RequiredArgsConstructor @Transactional @Slf4j
 public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepo userRepo;
     private final RoleRepo roleRepo;
-    private final PasswordEncoder passwordEncoder;
+
+    //private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    private JavaMailSender mailSender;
+    EmailService emailService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -87,36 +84,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepo.findAll();
     }
 
-    @Override
-    public void sendVerficationEmail(User user, String siteURL) {
-        try {
-            String toAddress = user.getEmail();
-            String fromAddress = "eventPmanager@gmail.com";
-            String senderName = "CamelSoft";
-            String subject = "Please verify your registration";
-            String content = "Dear [[name]],<br>"
-                    + "Please click the link below to verify your registration:<br>"
-                    + "<h3><a href=\"[[URL]]\" target=\"_self\">VERIFY</a></h3>"
-                    + "Thank you,<br>"
-                    + "Your company name.";
-
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message);
-
-            helper.setFrom(fromAddress, senderName);
-            helper.setTo(toAddress);
-            helper.setSubject(subject);
-
-            content = content.replace("[[name]]", user.getFirstname());
-            String verifyURL = siteURL + "/verify/" + user.getVerificationCode();
-            content = content.replace("[[URL]]", verifyURL);
-            helper.setText(content, true);
-
-            mailSender.send(message);
-        } catch (Exception exception) {
-            log(exception.getMessage());
-        }
-    }
 
     @Override
     public Boolean verifyCode(String verficationCode) {
@@ -129,6 +96,35 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             userRepo.save(user);
             return true;
         }
+    }
+
+    @Override
+    public User findUserByResetToken(String resetToken) {
+        return userRepo.findByResetToken(resetToken);
+    }
+
+    public Boolean updateResetToken(String email,String urlResetPasswordToken) {
+        User user = userRepo.findByEmail(email);
+        String token = RandomString.make(36);
+        if (user != null) {
+            user.setResetToken(token);
+            userRepo.save(user);
+            Mail mail = new Mail(
+                    user,"CamelSoft","Reset Password",
+                    urlResetPasswordToken+user.getResetToken());
+            emailService.sendEmail(mail);
+            return true;
+        } else return false;
+    }
+
+    public User getByResetToken(String token) {
+        return userRepo.findByResetToken(token);
+    }
+
+    public void updatePassword(User user, String newPassword) {
+        //String encodedPassword = passwordEncoder.encode(newPassword);
+        //user.setPassword(encodedPassword);
+        //userRepo.save(user);
     }
 
 }

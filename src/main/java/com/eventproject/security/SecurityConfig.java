@@ -3,6 +3,7 @@ package com.eventproject.security;
 import com.eventproject.filter.CustomAuthenticationFilter;
 import com.eventproject.filter.CustomAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,11 +23,14 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @Configuration @EnableWebSecurity @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserDetailsService userDetailsService;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Override
@@ -39,6 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/api/login/**",
                 "/api/user/save",
                 "/api/verify/**",
+                "/api/forget-password/**",
                 "/token/refresh/**").permitAll();
         http.authorizeRequests().antMatchers(GET,"/api/visitor/**").hasAuthority("ROLE_VISITOR");
         http.authorizeRequests().antMatchers(GET,"/api/admin/**").hasAuthority("ROLE_ADMIN");
