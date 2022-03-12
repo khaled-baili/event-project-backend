@@ -20,7 +20,7 @@ public class EmailService {
         try {
             String toAddress = mail.getUser().getEmail();
             String fromAddress = mail.getFrom();
-            String senderName = mail.getUser().getFirstname();
+            String senderName = mail.getFrom();
             String subject = mail.getSubject();
             String content = "Dear [[name]],<br>"
                     + "Please click the link below :<br>"

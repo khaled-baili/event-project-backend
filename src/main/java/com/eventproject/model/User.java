@@ -1,13 +1,15 @@
 package com.eventproject.model;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
-import java.util.Date;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -15,25 +17,33 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class User {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long userId;
-    @Column(nullable = false, unique = true)
 
+    @Column(nullable = false, unique = true)
+    @Email
+    @NotBlank
     private String email;
+
     @Column(nullable = false)
     private String password;
 
+
     @Column(nullable = false)
+    @NotBlank
     private String firstname;
 
     @Column(nullable = false)
+    @NotEmpty
     private String lastname;
 
     @Column(nullable = false)
-    private Date birthdate;
+    private String birthdate;
 
     @Column(nullable = false)
+    @NotEmpty
     private String telnumber;
 
     @Column(length = 64)

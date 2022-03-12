@@ -10,25 +10,33 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 
-@Service @RequiredArgsConstructor @Transactional @Slf4j
+@Service
+@Transactional
+@Slf4j
 public class UserServiceImpl implements UserService, UserDetailsService {
-    private final UserRepo userRepo;
-    private final RoleRepo roleRepo;
 
-    //private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepo userRepo;
+
+    @Autowired
+    private RoleRepo roleRepo;
+
 
     @Autowired
     EmailService emailService;
@@ -121,10 +129,5 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userRepo.findByResetToken(token);
     }
 
-    public void updatePassword(User user, String newPassword) {
-        //String encodedPassword = passwordEncoder.encode(newPassword);
-        //user.setPassword(encodedPassword);
-        //userRepo.save(user);
-    }
 
 }
