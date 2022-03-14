@@ -1,4 +1,4 @@
-package com.eventproject;
+package com.eventproject.enumType;
 
 
 public enum RoleEnum {
