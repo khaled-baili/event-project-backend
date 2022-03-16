@@ -4,9 +4,12 @@ import com.eventproject.enumType.ImageFor;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -26,6 +29,9 @@ public class Blog {
     @OneToOne(fetch = FetchType.EAGER)
     private ImageModel blogPic;
 
-    @Column(nullable = false)
-    private Date publishTime;
+    @CreationTimestamp
+    private LocalDateTime createdDateTime;
+
+    @UpdateTimestamp
+    private LocalDateTime updateDateTime;
 }

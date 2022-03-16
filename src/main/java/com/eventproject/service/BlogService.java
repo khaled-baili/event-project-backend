@@ -39,4 +39,8 @@ public class BlogService {
     public Optional<Blog> titleExist(String title) {
         return blogRepo.findByTitle(title);
     }
+
+    public Blog getBlogById(long idblog) {
+        return  blogRepo.findByBlogId(idblog);
+    }
 }

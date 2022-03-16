@@ -45,6 +45,32 @@ public class BlogController {
         }
     }
 
+    @PutMapping("/update-blog")
+    ResponseEntity<?> updateBlog(@Valid @RequestBody Blog blog) {
+        Blog oldBlog = blogService.getBlogById(blog.getBlogId());
+        if (oldBlog==null || blog==null) {
+            return new ResponseEntity<>(
+                    new ApiResponse(HttpStatus.NO_CONTENT,"You are not able to update blog"),
+                    HttpStatus.NO_CONTENT);
+        }
+        if (oldBlog.getTitle().equals(blog.getTitle())) {
+            blogService.saveBlog(blog);
+            return new ResponseEntity<>(
+                    new ApiResponse(HttpStatus.BAD_REQUEST,"Blog Updated"),
+                    HttpStatus.BAD_REQUEST);
+        } else {
+            if (blogService.titleExist(blog.getTitle()).isPresent()) {
+                return new ResponseEntity<>(
+                        new ApiResponse(HttpStatus.CONFLICT,"This title already exist"),
+                        HttpStatus.CONFLICT);
+            } else {
+                blogService.saveBlog(blog);
+                return new ResponseEntity<>(new ApiResponse(HttpStatus.CREATED,"blog Updated"),
+                        HttpStatus.CREATED);
+            }
+        }
+    }
+
     @DeleteMapping("/delete-blog")
     ResponseEntity<?> deleteBlog(@RequestParam Long idblog) {
         if (idblog == null)
