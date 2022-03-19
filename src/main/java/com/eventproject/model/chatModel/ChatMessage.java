@@ -1,11 +1,10 @@
 package com.eventproject.model.chatModel;
 
 import com.eventproject.enumType.MessageStatus;
-import com.eventproject.model.User;
+import com.eventproject.model.actorModel.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
 import java.util.Date;
