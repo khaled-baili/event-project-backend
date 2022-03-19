@@ -9,6 +9,7 @@ import com.eventproject.dto.ResetPasswordDto;
 import com.eventproject.dto.UpdateCred;
 import com.eventproject.dto.UpdatePasswordDto;
 import com.eventproject.model.*;
+import com.eventproject.model.actorModel.*;
 import com.eventproject.repository.RoleRepo;
 import com.eventproject.service.EmailService;
 import com.eventproject.service.UserService;
@@ -45,11 +46,8 @@ public class UserController {
     @Autowired
     private RoleRepo roleRepo;
 
-
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
-
-
 
     @GetMapping("/users")
     public ResponseEntity<List<User>>getUsers() {
@@ -133,7 +131,6 @@ public class UserController {
                     sponsor.setBirthdate(registerDto.getBirthdate());
                     sponsor.setPassword(bCryptPasswordEncoder.encode(registerDto.getPassword()));
                     sponsor.setRole(role);
-                    sponsor.setSponsorValidation(0);
                     sponsor.setAccountStatus(1);
                     sponsor.setEmployeeType(registerDto.getEmployeeType());
                     randomCode = RandomString.make(64);

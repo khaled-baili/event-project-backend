@@ -1,6 +1,7 @@
-package com.eventproject.model;
+package com.eventproject.model.actorModel;
 
 
+import com.eventproject.model.ImageModel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -50,8 +51,15 @@ public class User {
     private String verificationCode;
     private boolean enabled;
     private int accountStatus;
+
     @Column(nullable = true,length = 36)
     private String resetToken;
+
     @OneToOne(fetch = FetchType.EAGER)
     private Role role;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    private ImageModel imageModel;
+
+
 }

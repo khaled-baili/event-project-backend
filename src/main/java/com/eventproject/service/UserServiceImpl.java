@@ -1,12 +1,10 @@
 package com.eventproject.service;
 
 import com.eventproject.model.Mail;
-import com.eventproject.model.Role;
-import com.eventproject.model.User;
+import com.eventproject.model.actorModel.Role;
+import com.eventproject.model.actorModel.User;
 import com.eventproject.repository.RoleRepo;
 import com.eventproject.repository.UserRepo;
-import com.sun.mail.imap.Utility;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,6 +117,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             emailService.sendEmail(mail);
             return true;
         } else return false;
+    }
+
+    @Override
+    public User findUserById(long userId) {
+        return userRepo.findUserByUserId(userId);
     }
 
     public User getByResetToken(String token) {

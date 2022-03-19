@@ -1,6 +1,6 @@
 package com.eventproject.repository;
 
-import com.eventproject.model.User;
+import com.eventproject.model.actorModel.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,4 +10,5 @@ public interface UserRepo extends JpaRepository<User,Long> {
     Boolean existsByEmail(String email);
     User findByVerificationCode(String verificationCode);
     User findByResetToken(String restToken);
+    User findUserByUserId(long userId);
 }

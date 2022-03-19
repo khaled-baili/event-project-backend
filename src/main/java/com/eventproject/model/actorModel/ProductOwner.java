@@ -1,4 +1,4 @@
-package com.eventproject.model;
+package com.eventproject.model.actorModel;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

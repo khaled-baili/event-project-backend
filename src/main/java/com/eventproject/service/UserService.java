@@ -1,10 +1,9 @@
 package com.eventproject.service;
 
-import com.eventproject.model.Role;
-import com.eventproject.model.User;
+import com.eventproject.model.actorModel.Role;
+import com.eventproject.model.actorModel.User;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
     User saveUser(User user);
@@ -15,6 +14,7 @@ public interface UserService {
     Boolean verifyCode(String verficationCode);
     User findUserByResetToken(String resetToken);
     Boolean updateResetToken(String email, String passwordResetLink);
+    User findUserById(long userId);
 
 
 }

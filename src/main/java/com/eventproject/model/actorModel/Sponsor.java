@@ -1,11 +1,10 @@
-package com.eventproject.model;
+package com.eventproject.model.actorModel;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 @Entity
@@ -16,6 +15,5 @@ import javax.persistence.Entity;
 @ToString
 public class Sponsor extends User {
     private String employeeType;
-    private int sponsorValidation;
 
 }

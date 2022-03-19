@@ -1,5 +1,6 @@
 package com.eventproject.model;
 
+import com.eventproject.model.actorModel.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

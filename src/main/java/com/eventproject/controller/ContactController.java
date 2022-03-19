@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/api/contact")
 public class ContactController {
@@ -19,7 +21,7 @@ public class ContactController {
     }
 
     @PostMapping("/save-contact")
-    ResponseEntity<?> savaContact(@RequestBody Contact contact) {
+    ResponseEntity<?> savaContact(@Valid @RequestBody Contact contact) {
         if (contact == null)
             return new ResponseEntity<>(new ApiResponse(HttpStatus.BAD_REQUEST,"no information provided")
                 , HttpStatus.BAD_REQUEST);
