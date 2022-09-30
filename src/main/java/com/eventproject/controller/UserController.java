@@ -119,8 +119,8 @@ public class UserController {
                     email = new Mail(
                             productOwner,
                             "Camelsoft","Product Owner Account activation",
-                            "http://localhost:8080/api/");
-                    //emailService.sendEmail(email);
+                            "http://localhost:8080/api/"+randomCode);
+                    emailService.sendEmail(email);
                     break;
                 case "ROLE_SPONSOR":
                     sponsor = new Sponsor();
